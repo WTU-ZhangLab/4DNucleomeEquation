@@ -1,7 +1,8 @@
 clear;clc;
- if isempty(gcp('nocreate'))
-     parpool(24);
- end
+if isempty(gcp('nocreate'))
+    numCores = feature('numcores');
+    parpool(numCores);
+end
 %
 load('dataToFit.mat')
 params.simulatetime     = 1000;
@@ -126,9 +127,3 @@ set(gca,'TickLength',[0.02,0.025],'XTick',[5 55 105],'XTickLabel',...
     {'5','55','105'});
 ylim(gca,[0 0.3]);% 3
 xlim(gca,[-5 175]);% 6
-
-
-
-
-
-

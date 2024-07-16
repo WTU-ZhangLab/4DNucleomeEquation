@@ -47,7 +47,7 @@ else
     % slow
     mRNA_P = zeros(length(lambda_on),size(x,2));
     for i = 1:length(lambda_on)
-        mRNA_P(i,:) = poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
+        mRNA_P(i,:) = Poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
     end
     mRNA_P_v2 = mRNA_P'*(P_EP.*dt)';
 
@@ -81,5 +81,3 @@ if data.mRNAdistribinsize(idx) > 1
 end
 
 end
-
-

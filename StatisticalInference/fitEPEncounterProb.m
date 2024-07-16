@@ -75,7 +75,7 @@ for idx = 1:length(mRNAmean_model_all)
     if dG_all(idx) == 0
         Mmax = 100;
         x = 0:1:Mmax;
-        mRNA_P_mix = poissbeta(k_on_min/delta,k_off/delta,mu_min/delta,x);
+        mRNA_P_mix = Poissbeta(k_on_min/delta,k_off/delta,mu_min/delta,x);
         mRNAmean_model_all(idx) = (x*mRNA_P_mix);
         mRNA_var = sum(mRNA_P_mix.*(x'.^2)) - mRNAmean_model_all(idx)^2;
         CV_model_all(idx) = sqrt(mRNA_var/(mRNAmean_model_all(idx)^2));
@@ -101,11 +101,11 @@ for idx = 1:length(mRNAmean_model_all)
         Mmax = 500;
         x = 0:1:Mmax;
         % fast
-        mRNA_P_v1 = poissbeta(kon,koff,ksyn,x);
+        mRNA_P_v1 = Poissbeta(kon,koff,ksyn,x);
         % slow
         mRNA_P = zeros(length(lambda_on),size(x,2));
         for i = 1:length(lambda_on)
-            mRNA_P(i,:) = poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
+            mRNA_P(i,:) = Poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
         end
         mRNA_P_v2 = mRNA_P'*(P_EP.*dt)';
         
@@ -150,7 +150,7 @@ for idx = 1:length(mRNAmean_model)
     if dG(idx) == 0
         Mmax = 100;
         x = 0:1:Mmax;
-        mRNA_P_mix = poissbeta(k_on_min/delta,k_off/delta,mu_min/delta,x);
+        mRNA_P_mix = Poissbeta(k_on_min/delta,k_off/delta,mu_min/delta,x);
         mRNAmean_model(idx) = (x*mRNA_P_mix);
         mRNA_var = sum(mRNA_P_mix.*(x'.^2)) - mRNAmean_model(idx)^2;
         CV_model(idx) = sqrt(mRNA_var/(mRNAmean_model(idx)^2));
@@ -176,11 +176,11 @@ for idx = 1:length(mRNAmean_model)
         Mmax = 500;
         x = 0:1:Mmax;
         % fast
-        mRNA_P_v1 = poissbeta(kon,koff,ksyn,x);
+        mRNA_P_v1 = Poissbeta(kon,koff,ksyn,x);
         % slow
         mRNA_P = zeros(length(lambda_on),size(x,2));
         for i = 1:length(lambda_on)
-            mRNA_P(i,:) = poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
+            mRNA_P(i,:) = Poissbeta(lambda_on(i),lambda_off,lambda_mu(i),x)';
         end
         mRNA_P_v2 = mRNA_P'*(P_EP.*dt)';
         

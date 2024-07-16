@@ -14,10 +14,13 @@ First of all, download the repository as a zip file clicking the green button in
 
 The software prerequisites for the package to work are Matlab R2018a or later version of Matlab. You can start parallel pool (parpool) using the command `parpool`. Then, you can obtain the number of workers.
 
-```
+```matlab
 %% current parallel pool
+% By default, all available cores are used. If you want to specify the number of workers, 
+% make sure the specified number is less than or equal to the total number of cores.
 if isempty(gcp('nocreate'))
-    parpool(4); % 4 is the number of workers.It can be adjusted according to different local devices and servers
+    numCores = feature('numcores'); % Get the number of available cores in the system
+    parpool(numCores); % `numCores` is the number of workers you want to use, default is the number of cores in your computer
 end
 ```
 
@@ -31,7 +34,7 @@ There are two folders, and each folder contains several .m files. Next, we give 
 
 ### SimulationAnalysis
 
-####  testdG.m, testKEP.m
+#### testdG.m, testKEP.m
 
 The script can simulate and analyze different values of enhancer-promoter (E-P) genome distance (or E-P interaction strength). We simulate multiple times in parallel and store the simulated data in the folder generated according to the parameters.
 
@@ -57,7 +60,7 @@ This .m file can theoretically calculate the probability density function of ON-
 
 #### drawMeanVardG.m, drawMeanVarKEP.m
 
-This script can plot the mean and CV changes of E-P genome distance (or E-P interaction strength) based on simulation results. 
+This script can plot the mean and CV changes of E-P genome distance (or E-P interaction strength) based on simulation results.
 
 #### drawBC.m
 
@@ -71,7 +74,7 @@ This script theoretically calculate the peak information for E-P genome distance
 
 #### dataToFit.mat, dGvsEncounterProb.mat
 
-`dataToFit.mat`  provides the experimental data we are going to fit. The data includes the E-P genome distance, mRNA distribution, E-P encounter prob and mRNA mean level for different cell lines.  `dGvsEncounterProb.mat`  provides the encounter prob and corresponding E-P genomic distance. 
+`dataToFit.mat`  provides the experimental data we are going to fit. The data includes the E-P genome distance, mRNA distribution, E-P encounter prob and mRNA mean level for different cell lines.  `dGvsEncounterProb.mat`  provides the encounter prob and corresponding E-P genomic distance.
 
 #### fitmRNADistribution.m
 
@@ -88,3 +91,7 @@ This script is the core code of statical inference. We use the minimum cross ent
 #### CalculateTheoryProb.m
 
 This .m file theoretical calculate of mRNA distribution.
+
+## **Running the scripts**
+
+先运行SimulationAnalysis文件夹中的`testdG.m`和`testKEP.m`（这俩不分先后），然后依次运行StatisticalInference文件夹中的`fitmRNADistribution.m`和`fitEPEncounterProb.m`。

@@ -1,8 +1,9 @@
 clear;clc;
 close all;
-%% current parallel pool
+%% Current parallel pool
 if isempty(gcp('nocreate'))
-    parpool(32);
+    numCores = feature('numcores');
+    parpool(numCores);
 end
 K_coefficient =  0.05:0.1:0.95;
 for idx =  1:length(K_coefficient)
@@ -33,7 +34,7 @@ for idx =  1:length(K_coefficient)
     if exist([input_options.result_base_folder,input_options.filename],'file') == 0
         mkdir(input_options.result_base_folder,input_options.filename);
     end
-    
+
     
     %% Parallel computing
     tic;
@@ -41,14 +42,14 @@ for idx =  1:length(K_coefficient)
         parfor s_idx = 1:input_options.simulation_num
             % Load parameters
             params = ParametersBurst(input_options);
-            % simulation
+            % Simulation
             result = SimulateBurst(params,s_idx);
         end
     end
     timerVal = toc;
     X = ['Total simulation time:',num2str(timerVal)];
     disp(X)
-    %% Analysing Burst
+    %% Analyzing Burst
     % Only parameters are needed, and data are loaded from the .mat files
     tic;
     params = ParametersBurst(input_options);
@@ -59,6 +60,8 @@ for idx =  1:length(K_coefficient)
     save([input_options.result_base_folder,filename],'results');
     timerVal = toc;
     X = ['Analysing time:',num2str(timerVal)];
+    disp(X)
+    fig = figure;
     hold on
     if results.params.simulated_on == true
         h = histogram(results.mRNA_total,'BinEdges',0:max(results.mRNA_total),"Normalization",'probability','DisplayName','simulation');
@@ -69,18 +72,11 @@ for idx =  1:length(K_coefficient)
     plot(0.5+(0:1:length(results.mRNA_Prob)-1),results.mRNA_Prob,'LineWidth',1,'DisplayName','mixed')
 %     plot(0.5+(0:1:length(results.mRNA_Prob)-1),results.PDF.mRNA_Prob_v1,'LineWidth',1,'DisplayName','fast')
 %     plot(0.5+(0:1:length(results.mRNA_Prob)-1),results.PDF.mRNA_Prob_v2,'LineWidth',1,'DisplayName','slow')
-    set(figure1,'position',[300 400 280 190]);
+    set(fig,'position',[300 400 280 190]);
     set(gca,'TickLength',[0.02,0.025]);
     legend1 = legend(gca,'show');
-    results.weight
     box on
 %     title(['kep ',num2str(K_coefficient(idx)),'  weight ',num2str(results.weight) ]);
+    % Save the figure
+    saveas(fig, fullfile(input_options.result_base_folder, input_options.filename, 'figure.png'));
 end
-
-
-
-
-
-
-
-
