@@ -95,3 +95,57 @@ This .m file theoretical calculate of mRNA distribution.
 ## **Running the scripts**
 
 先运行SimulationAnalysis文件夹中的`testdG.m`和`testKEP.m`（这俩不分先后），然后依次运行StatisticalInference文件夹中的`fitmRNADistribution.m`和`fitEPEncounterProb.m`。
+
+## 与论文的匹配
+
+### 4D核体方程
+
+论文描述：论文提出了一个理论框架，即4D核体方程，整合了染色质上的E-P相互作用和基因转录的生化反应。
+代码实现：SimulateBurst.m可能包含模拟4D核体方程的代码，负责模拟基因表达动态。
+
+### 染色质动态模型
+
+论文描述：染色质被建模为一个聚合物，通过哈密顿量描述其动态。
+代码实现：InitializeConnectivityMatrix.m可能用于初始化广义Rouse模型，代表线性单体之间的连接。
+
+### 基因表达动态模型
+
+论文描述：基因表达过程被建模为一个两态模型，包括活跃（ON）和沉默（OFF）状态。
+代码实现：ParametersBurst.m可能用于生成参数结构，这些参数可能包括基因表达的激活率和转录率。
+
+### 链接函数
+
+论文描述：链接函数将上游的E-P拓扑结构与下游的基因表达联系起来。
+代码实现：SimulateBurst.m可能包含实现链接函数的代码，模拟E-P空间距离对转录相关反应率的影响。
+
+### mRNA分布模型
+
+论文描述：给定E-P空间距离时，mRNA丰度的稳态概率分布是泊松-贝塔分布。
+代码实现：Poissbeta.m可能用于理论上计算ON-OFF模型的概率密度函数。
+
+### 时间尺度分离方法
+
+论文描述：通过时间尺度分离方法，作者推导出了mRNA的稳态分布。
+代码实现：AnalyseBurst.m可能包含分析模拟数据和理论计算统计指标的代码，如平均mRNA水平和CV。
+
+## 实验数据与代码文件对应
+
+### 实验数据
+
+论文描述：论文中使用了小鼠胚胎干细胞的smRNA-FISH数据和E-P基因组距离数据。
+代码实现：dataToFit.mat提供了实验数据，用于拟合模型。
+
+### 模型选择和参数推断
+
+论文描述：4D核体方程允许模型选择和参数推断。
+代码实现：fitmRNADistribution.m和fitEPEncounterProb.m用于从实验数据中估计E-P相互作用动态和基因表达动态参数。
+
+### 双峰和多峰mRNA分布
+
+论文描述：研究发现，长程E-P相互作用可以诱导双峰和三峰mRNA分布。
+代码实现：drawBC.m用于计算双峰系数并确定峰值数边界；drawDGpeakinformation.m和drawKEPpeakinformation.m用于计算在固定E-P相互作用强度或基因组距离下的峰值信息。
+
+### 统计推断
+
+论文描述：进一步的统计推断表明E-P相互作用更倾向于通过控制启动子激活和转录起始率来调节mRNA水平。
+代码实现：CEInferenceBurst.m使用最小交叉熵方法估计参数；CalculateTheoryProb.m理论上计算mRNA分布。

@@ -63,6 +63,10 @@ for jdx = 1:length(dG)
 
 
     input_options.result_base_folder = fullfile(pwd, 'Result');
+    % 新建文件夹
+    if ~exist(input_options.result_base_folder, 'dir')
+        mkdir(input_options.result_base_folder);
+    end
     filename = sprintf('//%f_%d_%f_%f_%f_%f_%f_%f_%f.mat',[input_options.attraction_coef,dG(jdx),...
         input_options.k_on_max,input_options.k_on,input_options.k_off,input_options.mu_max...
         input_options.mu,input_options.delta,input_options.friction_coef]);

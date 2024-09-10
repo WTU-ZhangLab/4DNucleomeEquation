@@ -1,33 +1,19 @@
 clear;clc;
 close all;
-%% Current parallel pool
 if isempty(gcp('nocreate'))
     numCores = feature('numcores');
     parpool(numCores);
 end
-K_coefficient =  0.05:0.1:0.95;
+
+K_coefficient =  0.05:0.1:0.95; % K，E-P通信系数
+input_options.enhancer_index    = 25; % enhancer index number 增强子索引
+input_options.promoter_index    = 75; % promoter index number 启动子索引
+input_options.result_base_folder = fullfile(pwd, 'ResultKEP');
+
+% 循环遍历每个K系数
 for idx =  1:length(K_coefficient)
-    %% Parameters setting
-    % Upstream: Chromatin conformation
-    input_options.simulated_on      = true;
-    input_options.EP_flag           = true;
-    input_options.attraction_coef   = K_coefficient(idx); % K, E-P communication coefficient
-    input_options.enhancer_index    = 25; % enhancer index number
-    input_options.promoter_index    = 75; % promoter index number
-    
-    % Downstream: Transcriptional bursting
-    input_options.k_on_max       = 1; % off to on max
-    input_options.k_on           = 0.06;  % off to on min
-    input_options.k_off          = 0.20; % on to off
-    input_options.mu_max         = 3; % generate mRNA
-    input_options.mu             = 0.5; % generate mRNA
-    input_options.delta          = 0.1; % mRNA degradation
-    input_options.friction_coef  = 50; % friction coefficient
-    input_options.simulation_num    = 32; % simulation number
-    input_options.simulation_reaction_step = 1000000; %
-    input_options.simulation_time   = 600000; % [s]
-    
-    input_options.result_base_folder = fullfile(pwd, 'ResultKEP');
+    input_options.attraction_coef   = K_coefficient(idx); % K, E-P communication coefficient K，E-P通信系数
+
     input_options.filename = sprintf('//%f_%f_%f_%f_%f_%f_%f_%f',[input_options.attraction_coef,...
         input_options.k_on_max,input_options.k_on,input_options.k_off,input_options.mu_max...
         input_options.mu,input_options.delta,input_options.friction_coef]);
@@ -35,33 +21,29 @@ for idx =  1:length(K_coefficient)
         mkdir(input_options.result_base_folder,input_options.filename);
     end
 
+    params = ParametersBurst(input_options);
     
-    %% Parallel computing
-    tic;
     if input_options.simulated_on
+        tic;
         parfor s_idx = 1:input_options.simulation_num
-            % Load parameters
-            params = ParametersBurst(input_options);
-            % Simulation
             result = SimulateBurst(params,s_idx);
         end
+        timerVal = toc;
+        disp(['Total simulation time:',num2str(timerVal)]);
     end
-    timerVal = toc;
-    X = ['Total simulation time:',num2str(timerVal)];
-    disp(X)
-    %% Analyzing Burst
-    % Only parameters are needed, and data are loaded from the .mat files
+
+    % Analyzing Burst 分析爆发
+    % Only parameters are needed, and data are loaded from the .mat files 只需要参数，数据从.mat文件中加载
     tic;
-    params = ParametersBurst(input_options);
     results = AnalyseBurst(params);
     filename = sprintf('//%f_%f_%f_%f_%f_%f_%f_%f.mat',[input_options.attraction_coef,...
         input_options.k_on_max,input_options.k_on,input_options.k_off,input_options.mu_max...
         input_options.mu,input_options.delta,input_options.friction_coef]);
     save([input_options.result_base_folder,filename],'results');
     timerVal = toc;
-    X = ['Analysing time:',num2str(timerVal)];
-    disp(X)
-    fig = figure;
+    disp(['Analysing time:',num2str(timerVal)]);
+    
+    fig = figure; 
     hold on
     if results.params.simulated_on == true
         h = histogram(results.mRNA_total,'BinEdges',0:max(results.mRNA_total),"Normalization",'probability','DisplayName','simulation');

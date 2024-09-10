@@ -7,7 +7,7 @@ if params.simulated_on
     for i = 1:1:params.simulation_num
         filename = sprintf('//%d.mat',i);
         temp = load([params.result_base_folder,params.filename,filename]);
-        mRNA_level_total = [mRNA_level_total,temp.result.mRNA_level(1:end)];
+        mRNA_level_total = [mRNA_level_total, temp.result.mRNA_level(1:end)];
     end
 end
 %% =====================theroteical =======================================

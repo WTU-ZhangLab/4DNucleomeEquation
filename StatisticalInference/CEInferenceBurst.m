@@ -13,6 +13,9 @@ beq = [];
 options = optimoptions('fmincon','Algorithm','interior-point','HessianApproximation','lbfgs','MaxFunctionEvaluations',6000);
 [theta_est,fval,exitflag,output] = fmincon(@(theta) LogLikelihood(theta,data,params),theta0,A,b,Aeq,beq,lb,ub,[],options);
 result_CE = [fval,exitflag,theta_est'];
+if exist("result_CE","dir")==0
+    mkdir("result_CE");
+end
 filename = sprintf("result_CE//%d.mat",iter);
 save(filename,"result_CE");
 end
